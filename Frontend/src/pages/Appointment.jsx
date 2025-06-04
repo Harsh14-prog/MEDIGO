@@ -7,8 +7,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 
 const Appointment = () => {
-  
-const { docId } = useParams();
+  const { docId } = useParams();
 
   const { doctors, currencySymbol, backendUrl, getDoctorsData, token } =
     useContext(AppContext);
@@ -29,6 +28,8 @@ const { docId } = useParams();
   };
 
   const getAvailableSlots = async () => {
+
+     if (!docInfo) return;
     setdocSlots([]); // reset existing slots
 
     let today = new Date();
@@ -53,10 +54,25 @@ const { docId } = useParams();
           minute: "2-digit",
         });
 
-        daySlots.push({
-          datetime: new Date(currentDate), // exact date-time
-          time: formattedTime, // human-readable time
-        });
+        let day = currentDate.getDate();
+        let month = currentDate.getMonth() + 1;
+        let year = currentDate.getFullYear();
+
+        const slotDate = day + "_" + month + "_" + year;
+        const slotTime = formattedTime;
+
+        const isSlotAvailable =
+          docInfo.slots_booked[slotDate] &&
+          docInfo.slots_booked[slotDate].includes(slotTime)
+            ? false
+            : true;
+
+        if (isSlotAvailable) {
+          daySlots.push({
+            datetime: new Date(currentDate), // exact date-time
+            time: formattedTime, // human-readable time
+          });
+        }
 
         currentDate.setMinutes(currentDate.getMinutes() + 30); // next 30-min slot
       }
@@ -92,7 +108,7 @@ const { docId } = useParams();
       if (data.success) {
         toast.success(data.message);
         getDoctorsData();
-        navigate("/my-appointment");
+        navigate("/my-appointments");
       } else {
         toast.error(data.message);
       }
@@ -107,7 +123,9 @@ const { docId } = useParams();
   }, [doctors, docId]);
 
   useEffect(() => {
-    getAvailableSlots();
+    if (docInfo) {
+     getAvailableSlots();
+   }
   }, [docInfo]);
 
   useEffect(() => {
