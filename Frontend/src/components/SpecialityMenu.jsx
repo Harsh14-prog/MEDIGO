@@ -1,22 +1,47 @@
-import React from 'react'
-import {specialityData} from '../assets/assets.js'
-import {Link} from 'react-router-dom'
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import {
+  Stethoscope, Brain, HeartPulse, Bone, Syringe, Eye
+} from 'lucide-react';
+
+const specialities = [
+  { name: 'General', icon: <Stethoscope className="text-blue-600 w-6 h-6" /> },
+  { name: 'Neurology', icon: <Brain className="text-purple-600 w-6 h-6" /> },
+  { name: 'Cardiology', icon: <HeartPulse className="text-red-500 w-6 h-6" /> },
+  { name: 'Orthopaedics', icon: <Bone className="text-gray-600 w-6 h-6" /> },
+  { name: 'Immunology', icon: <Syringe className="text-green-600 w-6 h-6" /> },
+  { name: 'Ophthalmology', icon: <Eye className="text-indigo-600 w-6 h-6" /> },
+];
 
 const SpecialityMenu = () => {
-  return (
-    <div className='flex flex-col items-center gap-4 py-16 text-gray-800 ' id = 'speciality'>
-        <h1 className='text-3xl font-medium'>Find by Speciality</h1>
-        <p className='sm:w-1/3 text-center text-sm'>Simply browse through our extensive list of trusted doctors,schedule your appointment hassle-free.</p>
-        <div className='flex sm:justify-center gap-4 pt-5 w-full overflow-scroll'>
-            {specialityData.map((item , index) => (
-                <Link onClick={() => scrollTo(0,0)} className='flex flex-col items-center text-xs cursor-pointer flex-shrink-0 hover:translate-y-[-10px] transition-all duration-500' key={index} to = {`/doctors/${item.speciality}`}>
-                    <img className='w-16 sm:w-24 mb-2' src={item.image} alt="" />
-                    <p>{item.speciality}</p>
-                </Link>
-            ))}
-        </div>
-    </div>
-  )
-}
+  const navigate = useNavigate();
 
-export default SpecialityMenu
+  const handleClick = (speciality) => {
+    navigate(`/doctors?speciality=${encodeURIComponent(speciality)}`);
+    scrollTo(0, 0);
+  };
+
+  return (
+    <section id="speciality" className="py-20 px-4 md:px-12 lg:px-20 bg-[#f9fbff]">
+      <h2 className="text-4xl font-extrabold text-center text-gray-800 mb-4">Explore by Speciality</h2>
+      <p className="text-center text-base text-gray-500 mb-12">
+        Choose from a wide range of specialities to consult top doctors.
+      </p>
+
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-6 justify-items-center">
+        {specialities.map((item, index) => (
+          <div
+            key={index}
+            onClick={() => handleClick(item.name)}
+            className="flex flex-col items-center justify-center text-center bg-white shadow-md p-5 rounded-xl hover:shadow-lg transition-all cursor-pointer w-full"
+          >
+            <div className="mb-3">{item.icon}</div>
+            <p className="text-sm font-semibold text-gray-700">{item.name}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+};
+
+export default SpecialityMenu;

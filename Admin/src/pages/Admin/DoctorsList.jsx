@@ -1,45 +1,75 @@
-import React from 'react'
-import { useContext } from 'react'
+import React, { useContext, useEffect } from "react";
 import { AdminContext } from "../../context/AdminContext";
-import { useEffect } from 'react';
 
 const DoctorsList = () => {
-
-  const { doctors , getAllDoctors , aToken , changeAvailibility } = useContext(AdminContext)
+  const { doctors, getAllDoctors, aToken, changeAvailibility } =
+    useContext(AdminContext);
 
   useEffect(() => {
     if (aToken) {
-      getAllDoctors()
+      getAllDoctors();
     }
-  } , [aToken])
+  }, [aToken]);
 
   return (
-    <div className='m-5 mx-h-[90vh] overflow-y-scroll'>
-      <h1 className='text-lg font-medium'>All Doctors</h1>
-      <div className='w-full flex flex-wrap gap-4 pt-5 gap-y-6'>
-        {
-          doctors.map((item , index) => (
-            <div className='border border-indigo-200 rounded-xl max-w-56 overflow-hidden cursor-pointer group' key={index}>
-              
-              <div className='bg-indigo-50 group-hover:bg-blue-500 transition-all duration-500'>
-                <img src={item.image} alt="" className='w-full h-60 object-cover' />
-              </div>
+    <div className="p-6 overflow-y-auto min-h-screen bg-[#f9fbff]">
+      <h1 className="text-2xl font-semibold text-gray-800 mb-6">
+        🩺 All Doctors
+      </h1>
 
-              <div className='p-4'>
-                <p className='text-neutral-800 text-lg font-medium'>{item.name}</p>
-                <p className='text-zinc-600 text-sm'>{item.speciality}</p>
-                <div className='mt-2 flex items-center gap-1 tetx-sm'>
-                  <input onChange={() => changeAvailibility(item._id)} type="checkbox" checked={item.available} readOnly />
-                  <p>Available</p>
-                </div>
-              </div>
-              
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {doctors.map((item, index) => (
+          <div
+            key={index}
+            className="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition duration-300"
+          >
+            {/* Image */}
+            <div className="bg-indigo-50 hover:bg-blue-100 transition duration-300 rounded-t-lg overflow-hidden">
+              <img
+                src={item.image}
+                alt={item.name}
+                className="w-full h-56 object-cover"
+              />
             </div>
-          ))
-        }
+
+            {/* Info */}
+            <div className="p-4">
+              <h2 className="text-lg font-semibold text-gray-800 mb-1">
+                {item.name}
+              </h2>
+              <p className="text-sm text-gray-600 mb-2">{item.speciality}</p>
+
+              {/* Availability Toggle */}
+              <div className="flex items-center justify-between mt-3">
+                <label className="flex items-center gap-3 text-sm text-gray-700">
+                  <input
+                    type="checkbox"
+                    onChange={() => changeAvailibility(item._id)}
+                    checked={item.available}
+                    readOnly
+                    className="w-4 h-4 accent-blue-600 cursor-pointer"
+                  />
+                  <span className="text-base font-medium">
+                    {item.available ? "Available" : "Unavailable"}
+                  </span>
+                </label>
+
+                <span
+                  className={`text-sm px-3 py-1 rounded-full font-semibold ${
+                    item.available
+                      ? "bg-green-100 text-green-700"
+                      : "bg-red-100 text-red-700"
+                  }`}
+                >
+                  {item.available ? "✔ Active" : "✖ Inactive"}
+                </span>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default DoctorsList
+export default DoctorsList;

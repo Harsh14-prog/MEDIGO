@@ -1,40 +1,40 @@
-import React from 'react'
-import { assets } from '../assets/assets.js'
+import React from "react";
+import Lottie from "lottie-react";
+import heroAnimation from "../assets/hero_animation.json";
 
 const Header = () => {
   return (
-    <div className='flex flex-col md:flex-row flex-wrap bg-blue-500 rounded-lg px-6 md:px-10 lg:px-20'>
+    <section className="w-full bg-white relative overflow-hidden">
+      {/* Blue background on the right side */}
+      <div className="absolute right-0 top-0 w-[55%] h-full bg-[#e8f1ff] rounded-bl-[300px] z-0"></div>
 
-      {/* ------------ Left Side ------------- */}
-      <div className='md:w-1/2 flex flex-col items-start justify-center gap-4 py-10 m-auto md:py-[10vw] md:mb-[-30px]'>
-        <p className='text-3xl md:text-4xl lg:text-5xl text-white font-semibold leading-tight md:leading-tight lg:leading-tight '>
-          Book Appointment <br /> With Trusted Doctors
-        </p>
-
-        <div className='flex flex-col md:flex-row items-center gap-3 text-white text-sm font-light'>
-          <img className='w-28' src={assets.group_profiles} alt="" />
-          <p>
-            Simply browse through our extensive list of trusted doctors,<br className='hidden sm:block' /> 
-            schedule your appointment hassle-free.
+      {/* Content */}
+      <div className="relative z-10 max-w-[1300px] mx-auto flex flex-col-reverse lg:flex-row items-center justify-between px-6 sm:px-10 md:px-16 py-16 lg:py-24 gap-10 lg:gap-20">
+        {/* LEFT TEXT */}
+        <div className="flex-1 text-left space-y-6 max-w-xl text-[#1f3b5c]">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight tracking-tight">
+            Smarter Healthcare,
+            <br /> Seamless Experience
+          </h1>
+          <p className="text-base sm:text-lg opacity-90">
+            Book verified doctors with ease. Manage your health digitally — faster,
+            simpler, safer.
           </p>
+          <a
+            href="#speciality"
+            className="inline-block bg-blue-600 text-white px-6 py-3 rounded-full text-sm shadow hover:bg-blue-700 transition"
+          >
+            Explore Doctors
+          </a>
         </div>
 
-        <a href="#speciality" className='flex items-center rounded-full gap-2 bg-white px-8 py-3 text-gray-600 text-sm m-auto md:m-0 hover:scale-105 transition-all duration-300'>
-          Book appointment <img className='w-3' src={assets.arrow_icon} alt="" />
-        </a>
+        {/* RIGHT: Animation */}
+        <div className="flex-1 max-w-sm sm:max-w-md md:max-w-lg w-full">
+          <Lottie animationData={heroAnimation} loop className="w-full h-auto" />
+        </div>
       </div>
+    </section>
+  );
+};
 
-      {/* ------------ Right Side ------------- */}
-      <div className='md:w-1/2 relative px-4 md:px-0'>
-        <img 
-          className='w-full h-auto rounded-lg md:absolute md:bottom-0' 
-          src={assets.header_img} 
-          alt="Doctors" 
-        />
-      </div>
-
-    </div>
-  )
-}
-
-export default Header
+export default Header;

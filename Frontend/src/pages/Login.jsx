@@ -1,33 +1,30 @@
-import React, { useState } from "react";
-import { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AppContext } from "../context/AppContext";
-import axios from "axios";
-import { toast } from "react-toastify";
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import medicineIllustration from "../assets/medicine_cuate.svg";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 const Login = () => {
   const { backendUrl, token, setToken } = useContext(AppContext);
-
-  const [state, setState] = useState("Sign Up");
+  const [state, setState] = useState("Login");
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const onSubmitHandler = async (event) => {
-
     event.preventDefault();
-
     try {
-      if (state == "Sign Up") {
-        const { data } = await axios.post(backendUrl + "/api/user/register", {
+      if (state === "Sign Up") {
+        const { data } = await axios.post(`${backendUrl}/api/user/register`, {
           name,
           password,
           email,
         });
+
         if (data.success) {
           localStorage.setItem("token", data.token);
           setToken(data.token);
@@ -35,10 +32,11 @@ const Login = () => {
           toast.error(data.message);
         }
       } else {
-        const { data } = await axios.post(backendUrl + "/api/user/login", {
+        const { data } = await axios.post(`${backendUrl}/api/user/login`, {
           password,
           email,
         });
+
         if (data.success) {
           localStorage.setItem("token", data.token);
           setToken(data.token);
@@ -47,87 +45,105 @@ const Login = () => {
         }
       }
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data?.message || "Something went wrong!");
     }
   };
 
   useEffect(() => {
-     if(token){
-       //we have token means we are logged in , user will be redirected to homepage
-       navigate('/')
-     }
-  } , [token])
+    if (token) navigate("/");
+  }, [token]);
 
   return (
-    <form onSubmit={onSubmitHandler} className="min-h-[80vh] flex items-center">
-      <div className="flex flex-col gap-3 m-auto items-start p-8 min-w-[340px] sm:min-w-96 border rounded-xl text-zinc-600 text-sm shadow-lg">
-        <p className="text-2xl font-semibold">
-          {state === "Sign Up" ? "Create Account" : "Login"}
+    <div className="min-h-screen flex flex-col md:flex-row items-center justify-center bg-white">
+      {/* Left Panel with Illustration */}
+      <div className="w-full md:w-1/2 bg-[#f0f6ff] flex flex-col items-center justify-center px-8 py-16 text-center">
+        <h2 className="text-3xl font-bold text-blue-800 mb-3">New here?</h2>
+        <p className="text-gray-600 max-w-xs mb-6">
+          Sign up and explore health services with trusted professionals.
         </p>
-        <p>
-          Please {state === "Sign Up" ? "Create Account" : "Login"} to book
-          appointment
-        </p>
-        {state === "Sign Up" && (
-          <div className="w-full">
-            <p>Full Name</p>
+        <button
+          onClick={() => setState("Sign Up")}
+          className="border border-blue-600 text-blue-600 py-2 px-6 rounded-full hover:bg-blue-600 hover:text-white transition"
+        >
+          SIGN UP
+        </button>
+        <img
+          src={medicineIllustration}
+          alt="Doctor Illustration"
+          className="w-60 mt-10"
+        />
+      </div>
+
+      {/* Right Panel with Form */}
+      <div className="w-full md:w-1/2 px-10 py-16 flex flex-col justify-center">
+        <h2 className="text-3xl font-bold text-gray-800 mb-6">
+          {state === "Sign Up" ? "Create Account" : "Sign In"}
+        </h2>
+
+        <form onSubmit={onSubmitHandler} className="space-y-4">
+          {state === "Sign Up" && (
             <input
-              className="border border-zinc-300 rounded w-full p-2 mt-1"
               type="text"
-              onChange={(e) => setName(e.target.value)}
+              placeholder="Full Name"
               value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
               required
             />
-          </div>
-        )}
+          )}
 
-        <div className="w-full">
-          <p>Email</p>
           <input
-            className="border border-zinc-300 rounded w-full p-2 mt-1"
             type="email"
-            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email"
             value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
             required
           />
-        </div>
-        <div className="w-full">
-          <p>Password</p>
-          <input
-            className="border border-zinc-300 rounded w-full p-2 mt-1"
-            type="password"
-            onChange={(e) => setPassword(e.target.value)}
-            value={password}
-            required
-          />
-        </div>
 
-        <button type="submit" className="bg-blue-500 text-white w-full py-2 rounded-md text-base">
-          {state === "Sign Up" ? "Create Account" : "Login"}
-        </button>
-        {state === "Sign Up" ? (
-          <p>
-            Already have an account?{" "}
-            <span
-              onClick={() => setState("Login")}
-              className="text-blue-500 underline cursor-pointer"
-            >
-              Login here
-            </span>
-          </p>
-        ) : (
-          <p>
-            Create an new account?{" "}
-            <span
-              onClick={() => setState("Sign Up")}
-              className="text-blue-500 underline cursor-pointer"
-            >
-              Click here
-            </span>
-          </p>
-        )}
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            required
+          />
+
+          <button
+            type="submit"
+            className="w-full bg-gradient-to-r from-blue-500 to-indigo-500 text-white py-2 rounded-full hover:from-blue-600 hover:to-indigo-600 transition"
+          >
+            {state === "Sign Up" ? "Create Account" : "SIGN IN"}
+          </button>
+        </form>
+
+        {/* Switch Auth Type */}
+        <p className="mt-6 text-sm text-center text-gray-600">
+          {state === "Sign Up" ? (
+            <>
+              Already have an account?{" "}
+              <span
+                onClick={() => setState("Login")}
+                className="text-blue-600 hover:underline cursor-pointer"
+              >
+                Login here
+              </span>
+            </>
+          ) : (
+            <>
+              Don’t have an account?{" "}
+              <span
+                onClick={() => setState("Sign Up")}
+                className="text-blue-600 hover:underline cursor-pointer"
+              >
+                Sign up here
+              </span>
+            </>
+          )}
+        </p>
       </div>
-    </form>
+    </div>
   );
 };
 

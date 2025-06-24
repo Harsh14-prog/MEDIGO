@@ -11,6 +11,7 @@ const AppContextProvider = (props) => {
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
   const [doctors, setDoctors] = useState([]);
+  
   const [token, setToken] = useState(
     localStorage.getItem("token") ? localStorage.getItem("token") : false
   );
@@ -58,7 +59,7 @@ const AppContextProvider = (props) => {
     userData,
     setUserData,
     loadUserProfileData,
-    getDoctorsData
+    getDoctorsData,
   };
 
   useEffect(() => {

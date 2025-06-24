@@ -1,52 +1,81 @@
-import React from 'react'
-import { useContext } from 'react'
-import {useNavigate} from 'react-router-dom'
-import { AppContext } from '../context/AppContext'
+import React, { useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { AppContext } from "../context/AppContext";
 
 const TopDoctors = () => {
-  
-  const navigate = useNavigate()
-  const{doctors} = useContext(AppContext)
+  const navigate = useNavigate();
+  const { doctors } = useContext(AppContext);
 
   return (
-    <div className='flex flex-col items-center gap-4 my-16 text-gray-900 md:mx-10'>
-      <h1 className='text-3xl font-medium'>Top Doctors to Book</h1>
-      <p className='sm:w-1/3 text-center text-sm'>
-        Simply browse through our extensive list of trusted doctors.
-      </p>
+    <section
+      id="top-doctors"
+      className="pt-12 pb-20 px-6 sm:px-10 md:px-16 text-gray-900"
+    >
+      {/* Heading */}
+      <div className="max-w-6xl mx-auto text-center mb-12">
+        <h2 className="text-3xl sm:text-4xl font-bold mb-2">
+          Top Doctors to Book
+        </h2>
+        <p className="text-sm sm:text-base text-gray-600 max-w-xl mx-auto">
+          Simply browse through our extensive list of trusted doctors.
+        </p>
+      </div>
 
       {/* Grid */}
       <div
-        className='w-full grid gap-4 pt-5 gap-y-6 px-3 sm:px-0'
-        style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))' }}
+        className="grid gap-6 max-w-6xl mx-auto"
+        style={{ gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))" }}
       >
         {doctors.slice(0, 10).map((item, index) => (
           <div
-            onClick={() => {navigate(`/appointment/${item._id}`) ;scrollTo(0,0)}}
-            className='border border-blue-200 rounded-xl overflow-hidden cursor-pointer hover:-translate-y-2 transition-all duration-500'
             key={index}
+            onClick={() => {
+              navigate(`/appointment/${item._id}`);
+              scrollTo(0, 0);
+            }}
+            className="bg-white rounded-2xl overflow-hidden cursor-pointer shadow-sm hover:shadow-lg hover:scale-[1.03] transition-all duration-300"
           >
-            <img className='bg-blue-50' src={item.image} alt='' />
-            <div className='p-4'>
-              <div className={`flex items-center gap-2 text-sm text-center ${item.available ? 'text-green-500' : 'text-gray-500' } `}>
-                <p className={`w-2 h-2 ${item.available ? ' bg-green-500' : 'bg-red-400'} rounded-full`}></p>
-                <p>{item.available ? 'Available' : 'Not Available'}</p>
+            <img
+              src={item.image}
+              alt={item.name}
+              className="w-full h-60 object-contain p-2 bg-blue-50 rounded-t-2xl"
+            />
+            <div className="p-4 space-y-1">
+              <div
+                className={`flex items-center gap-2 text-sm ${
+                  item.available ? "text-green-500" : "text-red-400"
+                }`}
+              >
+                <span
+                  className={`w-2 h-2 rounded-full ${
+                    item.available ? "bg-green-500" : "bg-red-400"
+                  }`}
+                ></span>
+                <p>{item.available ? "Available" : "Not Available"}</p>
               </div>
-              <p className='text-gray-900 text-lg font-medium'>{item.name}</p>
-              <p className='text-gray-600 text-sm'>{item.speciality}</p>
+              <p className="text-lg font-semibold text-gray-800">{item.name}</p>
+              <p className="text-sm text-blue-600 font-medium">
+                {item.speciality}
+              </p>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Centered More Button */}
-      <div className='pt-8'>
-        <button onClick={()=> {navigate('/doctors');scrollTo(0,0)}} className='bg-blue-50 text-gray-600 px-12 py-3 rounded-full hover:bg-blue-100 transition'>
-          More
+      {/* More Button */}
+      <div className="pt-12 text-center">
+        <button
+          onClick={() => {
+            navigate("/doctors");
+            scrollTo(0, 0);
+          }}
+          className="bg-blue-600 text-white px-8 py-3 rounded-full text-sm shadow hover:bg-blue-700 transition"
+        >
+          View All Doctors
         </button>
       </div>
-    </div>
-  )
-}
+    </section>
+  );
+};
 
-export default TopDoctors
+export default TopDoctors;

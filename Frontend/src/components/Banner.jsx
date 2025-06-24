@@ -1,27 +1,41 @@
-import React from 'react'
-import { assets } from '../assets/assets'
-import {useNavigate} from 'react-router-dom'
+import React from 'react';
+import { assets } from '../assets/assets';
+import { useNavigate } from 'react-router-dom';
 
 const Banner = () => {
-   const navigate = useNavigate()
+  const navigate = useNavigate();
 
   return (
-    <div className='flex bg-blue-500 rounded-lg px-6 sm:px-10 md:px-14 lg:px-12 my-20 md:mx-10'>
-        {/* ---------------- left side ------------- */}
-        <div className='flex-1 py-8 sm:py-10 md:py-16 lg:py-24 lg:pl-5'>
-            <div className='trext-xl sm:text-2xl md:text-3xl lg:text-5xl font-semibold text-white'>
-                <p>Book Appointment</p>
-                <p className='mt-4'>With 100+ Trusted Doctors</p>
-            </div>
-            <button onClick={() => {navigate('/login'); scrollTo(0,0)}} className='bg-white text-sm sm:text-base text-gray-600 px-8 py-3 rounded-full mt-6 hover:scale-105 transition-all'>Create account</button>
+   <section className="bg-gradient-to-r from-[#e8f1ff] to-white rounded-3xl mt-8 mb-10 mx-4 sm:mx-8 md:mx-10 py-12 px-6 sm:px-10 md:px-16 shadow-sm">
+      <div className="flex flex-col-reverse md:flex-row items-center justify-between gap-10">
+        {/* Left Text */}
+        <div className="flex-1 text-left space-y-5">
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-800 leading-snug">
+            Book Appointment<br />
+            With 100+ Trusted Doctors
+          </h2>
+          <button
+            onClick={() => {
+              navigate('/login');
+              scrollTo(0, 0);
+            }}
+            className="bg-blue-600 text-white text-sm sm:text-base px-8 py-3 rounded-full shadow hover:bg-blue-700 transition"
+          >
+            Create Account
+          </button>
         </div>
 
-        {/* ---------------- right side ------------- */}
-        <div className='hidden md:block md:w-1/2 lg:w-[370px] relative'>
-            <img className='w-full absolute bottom-0 right-0' src={assets.appointment_img} alt="" />
+        {/* Right Image */}
+        <div className="flex-1 flex justify-center">
+          <img
+            src={assets.appointment_img}
+            alt="Book Appointment"
+            className="w-64 sm:w-72 md:w-80 lg:w-96 object-contain"
+          />
         </div>
-    </div>
-  )
-}
+      </div>
+    </section>
+  );
+};
 
-export default Banner
+export default Banner;

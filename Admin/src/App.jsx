@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import Login from "./pages/Login";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AdminContext } from "./context/AdminContext";
 import Navbar from "./components/Navbar";
@@ -20,26 +20,29 @@ const App = () => {
   const { dToken } = useContext(DoctorContext);
 
   return aToken || dToken ? (
-    <div className= 'bg-[#F8F9FD]'>
+    <div className="bg-[#F8F9FD] min-h-screen flex flex-col">
       <ToastContainer />
-      <Navbar/>
-      <div className="flex items-start">
-        <Sidebar/>
-        <Routes>
+      <Navbar />
 
-          {/* Admin Route */}
-           <Route path="/" element = {<></>}/>
-           <Route path="/admin-dashboard" element = {<Dashboard/>}/>
-           <Route path="/all-appointements" element = {<AllAppointments/>}/>
-           <Route path="/add-doctor" element = {<AddDoctor/>}/>
-           <Route path="/doctor-list" element = {<DoctorsList/>}/>
+      {/* Main layout container: Sidebar + Page content */}
+      <div className="flex flex-1 h-[calc(100vh-64px)] overflow-hidden">
+        <Sidebar />
 
-           {/* Doctor Route */}
-           <Route path="/doctor-dashboard" element = {<DoctorDashboard/>}/>
-           <Route path="/doctor-appointments" element = {<DoctorAppointment/>}/>
-           <Route path="/doctor-profile" element = {<DoctorProfile/>}/>
-           
-        </Routes>
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6">
+          <Routes>
+            {/* Admin Routes */}
+            <Route path="/" element={<></>} />
+            <Route path="/admin-dashboard" element={<Dashboard />} />
+            <Route path="/all-appointements" element={<AllAppointments />} />
+            <Route path="/add-doctor" element={<AddDoctor />} />
+            <Route path="/doctor-list" element={<DoctorsList />} />
+
+            {/* Doctor Routes */}
+            <Route path="/doctor-dashboard" element={<DoctorDashboard />} />
+            <Route path="/doctor-appointments" element={<DoctorAppointment />} />
+            <Route path="/doctor-profile" element={<DoctorProfile />} />
+          </Routes>
+        </main>
       </div>
     </div>
   ) : (
