@@ -5,9 +5,13 @@ import bcrypt from "bcrypt";
 import { v2 as cloudinary } from "cloudinary";
 import doctorModel from "../models/doctorModel.js";
 import appointmentModel from "../models/appointmentModel.js";
-import razorpay from "razorpay";
+import Razorpay from "razorpay"; // Capital R (by convention)
 import crypto from "crypto";
-
+import {
+  RAZORPAY_KEY_ID,
+  RAZORPAY_SECRET,
+  CURRENCY,
+} from "../config/config.js";
 
 // API to register user
 const registerUser = async (req, res) => {
@@ -154,25 +158,17 @@ const bookAppointment = async (req, res) => {
     }
 
     // if doctor available , check is it available at selected slot
-    let slots_booked = docData.slots_booked; // (slots_booked is an obj , it contains slotDate as key and in value array of times of that data)
+    const slots_booked = { ...docData.slots_booked };
 
-    // checking for slot availibility ,
     if (slots_booked[slotDate]) {
       if (slots_booked[slotDate].includes(slotTime)) {
-        // selected time ya date chya array madhe aahe ka te check
         return res.json({ success: false, message: "Slot not available" });
       } else {
-        slots_booked[slotDate].push(slotTime); // pushed our selected time in array of times available on this date
+        slots_booked[slotDate].push(slotTime);
       }
     } else {
-      slots_booked[slotDate] = [];
-      slots_booked[slotDate].push(slotTime);
+      slots_booked[slotDate] = [slotTime];
     }
-
-    // const slots_booked = {
-    //   "2025-06-04": ["09:00 AM", "10:00 AM"],
-    //   "2025-06-05": ["10:00 AM"],
-    // };
 
     const userData = await userModel.findById(userId).select("-password");
 
@@ -190,9 +186,10 @@ const bookAppointment = async (req, res) => {
     };
 
     const newAppointment = new appointmentModel(appointmentData);
-    await newAppointment.save(); // Await to ensure it's saved before responding
+    const saved = await newAppointment.save();
+    console.log("✅ Appointment saved:", saved);
 
-    // Save updated slots
+    // now update doctor
     await doctorModel.findByIdAndUpdate(docId, { slots_booked });
 
     res.json({ success: true, message: "Appointment Booked" });
@@ -264,15 +261,31 @@ const cancelAppointment = async (req, res) => {
 };
 
 // API to make payment of appointment
-const razorpayInstance = new razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_SECRET_KEY,
-});
-
+console.log(
+  "✅ ENV CHECK:",
+  process.env.RAZORPAY_KEY_ID,
+  process.env.RAZORPAY_SECRET
+);
 const paymentRazorpay = async (req, res) => {
   try {
-    const { appointmentId } = req.body;
+    // ✅ Load dotenv inside function (isolated fix)
+    import("dotenv").then((dotenv) => {
+      dotenv.config(); // reload if not loaded
+    });
 
+    // ✅ Check env values
+    console.log(
+      "✅ ENV CHECK:",
+      process.env.RAZORPAY_KEY_ID,
+      process.env.RAZORPAY_SECRET
+    );
+
+    const razorpayInstance = new Razorpay({
+      key_id: RAZORPAY_KEY_ID,
+      key_secret: RAZORPAY_SECRET,
+    });
+
+    const { appointmentId } = req.body;
     const appointmentData = await appointmentModel.findById(appointmentId);
 
     if (!appointmentData || appointmentData.cancelled) {
@@ -282,16 +295,14 @@ const paymentRazorpay = async (req, res) => {
       });
     }
 
-    // creating options for razorpay payment
     const options = {
       amount: appointmentData.amount * 10,
-      currency: process.env.CURRENCY,
+      currency: CURRENCY,
+
       receipt: appointmentId,
     };
 
-    // creation of an order
     const order = await razorpayInstance.orders.create(options);
-
     res.json({ success: true, order });
   } catch (error) {
     console.log(error);
@@ -302,12 +313,17 @@ const paymentRazorpay = async (req, res) => {
 // API to verify payment of razorpay --->> used after payment is done to make changes in database after verification that payment is authenticated or not
 const verifyRazorpay = async (req, res) => {
   try {
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, appointmentId } = req.body;
+    const {
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+      appointmentId,
+    } = req.body;
 
     const sign = razorpay_order_id + "|" + razorpay_payment_id;
 
     const expectedSign = crypto
-      .createHmac("sha256", process.env.RAZORPAY_SECRET_KEY)
+      .createHmac("sha256", process.env.RAZORPAY_SECRET)
       .update(sign.toString())
       .digest("hex");
 
@@ -315,18 +331,57 @@ const verifyRazorpay = async (req, res) => {
     console.log("Received:", razorpay_signature);
 
     if (expectedSign === razorpay_signature) {
-      await appointmentModel.findByIdAndUpdate(appointmentId, { payment: true });
+      await appointmentModel.findByIdAndUpdate(appointmentId, {
+        payment: true,
+      });
       return res.json({ success: true, message: "Payment Successful" });
     } else {
       return res.json({ success: false, message: "Invalid signature" });
     }
-
   } catch (error) {
     console.log("Verification Error:", error);
     res.json({ success: false, message: error.message });
   }
 };
 
+const verifyVideoAccess = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const appointmentId = req.params.id;
+
+    const appointment = await appointmentModel.findById(appointmentId);
+
+    if (!appointment) {
+      return res.json({ success: false, message: "Appointment not found" });
+    }
+
+    if (appointment.userId !== userId && appointment.docId !== userId) {
+      return res.json({ success: false, message: "Access Denied" });
+    }
+
+    if (appointment.cancelled) {
+      return res.json({ success: false, message: "Appointment Cancelled" });
+    }
+
+    if (!appointment.payment) {
+      return res.json({ success: false, message: "Appointment not paid" });
+    }
+
+    // Identify role based on who is requesting
+    const role = appointment.docId === userId ? "doctor" : "user";
+
+    return res.json({
+      success: true,
+      message: "Access Granted",
+      role,
+      doctorName: appointment.docData?.name || "Doctor",
+      userName: appointment.userData?.name || "User",
+    });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+};
 
 export {
   registerUser,
@@ -337,5 +392,6 @@ export {
   listAppointment,
   cancelAppointment,
   paymentRazorpay,
-  verifyRazorpay
+  verifyRazorpay,
+  verifyVideoAccess,
 };

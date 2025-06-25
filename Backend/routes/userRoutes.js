@@ -2,7 +2,7 @@ import express from "express"
 import { registerUser , loginUser, getProfile, updateProfile, bookAppointment, listAppointment, cancelAppointment, paymentRazorpay, verifyRazorpay } from "../controllers/userController.js"
 import authUser from "../middlewares/authUser.js"
 import upload from "../middlewares/multer.js";
-
+import { verifyVideoAccess } from "../controllers/userController.js";
 
 const userRouter = express.Router()
 
@@ -15,6 +15,8 @@ userRouter.get('/list-appointments' , authUser , listAppointment)
 userRouter.post('/cancel-appointments' , authUser , cancelAppointment)
 userRouter.post('/payment-razorpay' , authUser , paymentRazorpay)
 userRouter.post('/verifyRazorpay' , authUser , verifyRazorpay)
+userRouter.get('/verify-video-access/:id', authUser, verifyVideoAccess);
+
 
 
 export {userRouter}

@@ -18,31 +18,20 @@ const Login = () => {
   const onSubmitHandler = async (event) => {
     event.preventDefault();
     try {
-      if (state === "Sign Up") {
-        const { data } = await axios.post(`${backendUrl}/api/user/register`, {
-          name,
-          password,
-          email,
-        });
+      const route =
+        state === "Sign Up" ? "/api/user/register" : "/api/user/login";
+      const body =
+        state === "Sign Up"
+          ? { name, password, email }
+          : { password, email };
 
-        if (data.success) {
-          localStorage.setItem("token", data.token);
-          setToken(data.token);
-        } else {
-          toast.error(data.message);
-        }
+      const { data } = await axios.post(`${backendUrl}${route}`, body);
+
+      if (data.success) {
+        localStorage.setItem("token", data.token);
+        setToken(data.token);
       } else {
-        const { data } = await axios.post(`${backendUrl}/api/user/login`, {
-          password,
-          email,
-        });
-
-        if (data.success) {
-          localStorage.setItem("token", data.token);
-          setToken(data.token);
-        } else {
-          toast.error(data.message);
-        }
+        toast.error(data.message);
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong!");
@@ -55,17 +44,26 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row items-center justify-center bg-white">
-      {/* Left Panel with Illustration */}
+      {/* Left Panel */}
       <div className="w-full md:w-1/2 bg-[#f0f6ff] flex flex-col items-center justify-center px-8 py-16 text-center">
-        <h2 className="text-3xl font-bold text-blue-800 mb-3">New here?</h2>
+        <h2 className="text-3xl font-bold text-blue-800 mb-3">
+          {state === "Login" ? "New here?" : "Already have an account?"}
+        </h2>
         <p className="text-gray-600 max-w-xs mb-6">
-          Sign up and explore health services with trusted professionals.
+          {state === "Login"
+            ? "Sign up and explore health services with trusted professionals."
+            : "Log in to your account to continue your health journey."}
         </p>
         <button
-          onClick={() => setState("Sign Up")}
-          className="border border-blue-600 text-blue-600 py-2 px-6 rounded-full hover:bg-blue-600 hover:text-white transition"
+          disabled={state === "Sign Up" && true}
+          onClick={() => setState(state === "Login" ? "Sign Up" : "Login")}
+          className={`py-2 px-6 rounded-full transition ${
+            state === "Login"
+              ? "border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white"
+              : "bg-blue-600 text-white cursor-not-allowed opacity-70"
+          }`}
         >
-          SIGN UP
+          {state === "Login" ? "SIGN UP" : "LOGIN"}
         </button>
         <img
           src={medicineIllustration}
@@ -74,7 +72,7 @@ const Login = () => {
         />
       </div>
 
-      {/* Right Panel with Form */}
+      {/* Right Panel */}
       <div className="w-full md:w-1/2 px-10 py-16 flex flex-col justify-center">
         <h2 className="text-3xl font-bold text-gray-800 mb-6">
           {state === "Sign Up" ? "Create Account" : "Sign In"}
@@ -118,7 +116,7 @@ const Login = () => {
           </button>
         </form>
 
-        {/* Switch Auth Type */}
+        {/* Mode Toggle Text */}
         <p className="mt-6 text-sm text-center text-gray-600">
           {state === "Sign Up" ? (
             <>
