@@ -9,8 +9,19 @@ const MyAppointments = () => {
   const [appointments, setAppointments] = useState([]);
 
   const Months = [
-    " ", "JAN", "FEB", "MAR", "APR", "MAY", "JUN",
-    "JUL", "AUG", "SEP", "OCT", "NOV", "DEC",
+    " ",
+    "JAN",
+    "FEB",
+    "MAR",
+    "APR",
+    "MAY",
+    "JUN",
+    "JUL",
+    "AUG",
+    "SEP",
+    "OCT",
+    "NOV",
+    "DEC",
   ];
 
   const navigate = useNavigate();
@@ -129,20 +140,26 @@ const MyAppointments = () => {
               />
             </div>
             <div className="flex-1 text-sm text-zinc-600">
-              <p className="text-neutral-800 font-semibold">{items.docData.name}</p>
+              <p className="text-neutral-800 font-semibold">
+                {items.docData.name}
+              </p>
               <p>{items.docData.speciality}</p>
               <p className="text-zinc-700 font-medium mt-1">Address:</p>
               <p className="text-xs">{items.docData.address.line1}</p>
               <p className="text-xs">{items.docData.address.line2}</p>
               <p className="text-xs mt-1">
-                <span className="text-sm text-neutral-700 font-medium">Date & Time:</span>{" "}
+                <span className="text-sm text-neutral-700 font-medium">
+                  Date & Time:
+                </span>{" "}
                 {slotDateFormat(items.slotDate)} | {items.slotTime}
               </p>
             </div>
             <div></div>
             <div className="flex flex-col gap-2 justify-end">
               {!items.cancelled && items.payment && !items.iscompleted && (
-                <button className="sm:min-w-48 py-2 border rounded text-stone-500 bg-indigo-50">Paid</button>
+                <button className="sm:min-w-48 py-2 border rounded text-stone-500 bg-indigo-50">
+                  Paid
+                </button>
               )}
               {!items.cancelled && !items.payment && !items.iscompleted && (
                 <button
@@ -170,16 +187,19 @@ const MyAppointments = () => {
                   Completed
                 </button>
               )}
-              {items.payment && !items.cancelled && !items.iscompleted && (
-                <a
-                  href={`/video-call/${items._id}`}
-                  className="text-sm text-white text-center sm:min-w-48 py-2 border rounded bg-green-600 hover:bg-green-700 transition-all duration-300"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Join Video Call
-                </a>
-              )}
+              {items.payment &&
+                items.callStarted &&
+                !items.cancelled &&
+                !items.iscompleted && (
+                  <a
+                    href={`/video-call/${items._id}`}
+                    className="text-sm text-white text-center sm:min-w-48 py-2 border rounded bg-green-600 hover:bg-green-700 transition-all duration-300"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Join Video Call
+                  </a>
+                )}
             </div>
           </div>
         ))}

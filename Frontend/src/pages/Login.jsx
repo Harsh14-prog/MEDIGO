@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import medicineIllustration from "../assets/medicine_cuate.svg";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { useLocation } from "react-router-dom";
 
 const Login = () => {
   const { backendUrl, token, setToken } = useContext(AppContext);
@@ -13,6 +14,14 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
 
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state?.mode === "signup") {
+      setState("Sign Up");
+    }
+  }, [location.state]);
+
   const navigate = useNavigate();
 
   const onSubmitHandler = async (event) => {
@@ -21,9 +30,7 @@ const Login = () => {
       const route =
         state === "Sign Up" ? "/api/user/register" : "/api/user/login";
       const body =
-        state === "Sign Up"
-          ? { name, password, email }
-          : { password, email };
+        state === "Sign Up" ? { name, password, email } : { password, email };
 
       const { data } = await axios.post(`${backendUrl}${route}`, body);
 
@@ -38,9 +45,12 @@ const Login = () => {
     }
   };
 
-  useEffect(() => {
-    if (token) navigate("/");
-  }, [token]);
+useEffect(() => {
+  if (token) {
+    navigate("/", { replace: true }); 
+  }
+}, [token]);
+
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row items-center justify-center bg-white">

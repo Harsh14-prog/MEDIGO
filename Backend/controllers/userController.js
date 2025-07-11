@@ -355,6 +355,13 @@ const verifyVideoAccess = async (req, res) => {
       return res.json({ success: false, message: "Appointment not found" });
     }
 
+    if (!appointment.callStarted) {
+      return res.json({
+        success: false,
+        message: "Doctor has not started the call yet",
+      });
+    }
+
     if (appointment.userId !== userId && appointment.docId !== userId) {
       return res.json({ success: false, message: "Access Denied" });
     }

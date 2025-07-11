@@ -40,7 +40,9 @@ const VideoCallRoom = () => {
 
   const callIntervalRef = useRef(null);
 
-  const ICE_SERVERS = { iceServers: [{ urls: "stun:stun.l.google.com:19302" }] };
+  const ICE_SERVERS = {
+    iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+  };
 
   useEffect(() => {
     const verifyAccess = async () => {
@@ -59,6 +61,7 @@ const VideoCallRoom = () => {
           setUserName(data.userName);
         } else {
           setAccessStatus("denied");
+          toast.error(data.message);
         }
       } catch (err) {
         setAccessStatus("denied");
@@ -113,11 +116,13 @@ const VideoCallRoom = () => {
       remoteVideoRef.current.srcObject = event.streams[0];
     };
 
-    navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
-      localStreamRef.current = stream;
-      localVideoRef.current.srcObject = stream;
-      stream.getTracks().forEach((track) => pc.addTrack(track, stream));
-    });
+    navigator.mediaDevices
+      .getUserMedia({ video: true, audio: true })
+      .then((stream) => {
+        localStreamRef.current = stream;
+        localVideoRef.current.srcObject = stream;
+        stream.getTracks().forEach((track) => pc.addTrack(track, stream));
+      });
 
     return pc;
   };
@@ -164,16 +169,26 @@ const VideoCallRoom = () => {
     return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
   };
 
-  if (accessStatus === "loading") return <div className="text-white text-center mt-10">Loading...</div>;
-  if (accessStatus === "denied") return <div className="text-red-500 text-center mt-10">Access Denied</div>;
+  if (accessStatus === "loading")
+    return <div className="text-white text-center mt-10">Loading...</div>;
+  if (accessStatus === "denied")
+    return <div className="text-red-500 text-center mt-10">Access Denied</div>;
 
   if (callEnded) {
     return (
       <div className="fixed inset-0 bg-gradient-to-br from-black via-gray-900 to-black text-white flex flex-col items-center justify-center p-6">
-        <h1 className="text-4xl font-bold mb-4">📞 Call Ended</h1>
-        <p className="text-lg mb-2">Duration: <span className="text-green-400">{formatDuration(callDuration)}</span></p>
-        <p className="text-gray-400 mb-8">Thank you for using Prescripto Video Call</p>
-        <button onClick={() => navigate("/")} className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full font-semibold transition-all">
+        <h1 className="text-4xl font-bold mb-4"> Call Ended</h1>
+        <p className="text-lg mb-2">
+          Duration:{" "}
+          <span className="text-green-400">{formatDuration(callDuration)}</span>
+        </p>
+        <p className="text-gray-400 mb-8">
+          Thank you for using Medigo Video Call
+        </p>
+        <button
+          onClick={() => navigate("/")}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full font-semibold transition-all"
+        >
           Go to Dashboard
         </button>
       </div>
@@ -182,7 +197,9 @@ const VideoCallRoom = () => {
 
   return (
     <div className="bg-black text-white min-h-screen w-full flex flex-col items-center justify-center p-4">
-      <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-center">Secure Video Call Room</h2>
+      <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-center">
+        Secure Video Call Room
+      </h2>
 
       <div className="flex flex-col md:flex-row gap-6 w-full max-w-6xl justify-center items-center">
         <div className="relative w-full max-w-[90vw] h-[56vw] sm:h-[240px] md:h-[360px]">
@@ -192,17 +209,27 @@ const VideoCallRoom = () => {
             {isMicOn ? <MdMic size={14} /> : <MdMicOff size={14} />}
             {isCamOn ? <MdVideocam size={14} /> : <MdVideocamOff size={14} />}
           </div>
-          <video ref={localVideoRef} autoPlay muted className="w-full h-full rounded-xl border-4 border-blue-500 shadow-lg object-cover" />
+          <video
+            ref={localVideoRef}
+            autoPlay
+            muted
+            className="w-full h-full rounded-xl border-4 border-blue-500 shadow-lg object-cover"
+          />
         </div>
 
         <div className="relative w-full max-w-[90vw] h-[56vw] sm:h-[240px] md:h-[360px]">
           <div className="absolute top-2 left-2 z-10 px-3 py-1 text-xs rounded-full bg-[#111827] text-white font-medium flex items-center gap-2 shadow-md">
             {role === "doctor" ? <FaUser size={14} /> : <FaUserMd size={14} />}
-            {role === "doctor" ? userName : doctorName} ({role === "doctor" ? "User" : "Doctor"})
+            {role === "doctor" ? userName : doctorName} (
+            {role === "doctor" ? "User" : "Doctor"})
             <MdMic size={14} />
             <MdVideocam size={14} />
           </div>
-          <video ref={remoteVideoRef} autoPlay className="w-full h-full rounded-xl border-4 border-green-500 shadow-lg object-cover" />
+          <video
+            ref={remoteVideoRef}
+            autoPlay
+            className="w-full h-full rounded-xl border-4 border-green-500 shadow-lg object-cover"
+          />
         </div>
       </div>
 
@@ -223,23 +250,35 @@ const VideoCallRoom = () => {
 
       <div className="flex flex-wrap justify-center gap-4 mt-6">
         {!callStarted ? (
-          <button onClick={handleCallStart} className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-full transition">
+          <button
+            onClick={handleCallStart}
+            className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-full transition"
+          >
             <MdVideoCall size={20} />
             Start Call
           </button>
         ) : (
           <>
-            <button onClick={toggleMic} className="flex items-center gap-2 px-5 py-2 bg-gray-700 hover:bg-gray-600 rounded-full text-sm">
+            <button
+              onClick={toggleMic}
+              className="flex items-center gap-2 px-5 py-2 bg-gray-700 hover:bg-gray-600 rounded-full text-sm"
+            >
               {isMicOn ? <MdMicOff size={16} /> : <MdMic size={16} />}
               {isMicOn ? "Mute" : "Unmute"}
             </button>
 
-            <button onClick={toggleCamera} className="flex items-center gap-2 px-5 py-2 bg-gray-700 hover:bg-gray-600 rounded-full text-sm">
+            <button
+              onClick={toggleCamera}
+              className="flex items-center gap-2 px-5 py-2 bg-gray-700 hover:bg-gray-600 rounded-full text-sm"
+            >
               {isCamOn ? <MdVideocamOff size={16} /> : <MdVideocam size={16} />}
               {isCamOn ? "Stop Video" : "Start Video"}
             </button>
 
-            <button onClick={handleEndCall} className="flex items-center gap-2 px-6 py-2 bg-red-600 hover:bg-red-700 rounded-full text-sm font-semibold">
+            <button
+              onClick={handleEndCall}
+              className="flex items-center gap-2 px-6 py-2 bg-red-600 hover:bg-red-700 rounded-full text-sm font-semibold"
+            >
               <MdCallEnd size={18} />
               End Call
             </button>

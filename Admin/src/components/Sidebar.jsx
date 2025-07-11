@@ -18,17 +18,6 @@ const Sidebar = () => {
 
   return (
     <aside className="min-h-screen bg-white border-r border-gray-200 shadow-sm w-16 sm:w-64 px-2 sm:px-4 py-6 transition-all duration-300">
-      {/* Logo */}
-      <div className="mb-10 flex items-center gap-3 justify-center sm:justify-start">
-        <img
-          src={medicalLogo}
-          alt="Logo"
-          className="w-8 h-8 object-contain rounded-md shadow"
-        />
-        <h1 className="text-lg sm:text-xl font-bold text-blue-700 tracking-wide hidden sm:block">
-          Medigo
-        </h1>
-      </div>
 
       {/* Admin Menu */}
       {aToken && (
@@ -41,7 +30,11 @@ const Sidebar = () => {
           </li>
           <li>
             <NavLink to="/all-appointements" className={navLinkClass}>
-              <img src={assets.appointment_icon} alt="Appointments" className="w-5" />
+              <img
+                src={assets.appointment_icon}
+                alt="Appointments"
+                className="w-5"
+              />
               <span className="hidden sm:inline">Appointments</span>
             </NavLink>
           </li>
@@ -53,7 +46,11 @@ const Sidebar = () => {
           </li>
           <li>
             <NavLink to="/doctor-list" className={navLinkClass}>
-              <img src={assets.people_icon} alt="Doctors List" className="w-5" />
+              <img
+                src={assets.people_icon}
+                alt="Doctors List"
+                className="w-5"
+              />
               <span className="hidden sm:inline">Doctors List</span>
             </NavLink>
           </li>
@@ -71,7 +68,11 @@ const Sidebar = () => {
           </li>
           <li>
             <NavLink to="/doctor-appointments" className={navLinkClass}>
-              <img src={assets.appointment_icon} alt="Appointments" className="w-5" />
+              <img
+                src={assets.appointment_icon}
+                alt="Appointments"
+                className="w-5"
+              />
               <span className="hidden sm:inline">Appointments</span>
             </NavLink>
           </li>

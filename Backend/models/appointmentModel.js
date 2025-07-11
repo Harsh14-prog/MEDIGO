@@ -13,6 +13,7 @@ const appointmentSchema = new Schema({
     cancelled:{type : Boolean , default:false},
     payment:{type : Boolean , default : false},
     iscompleted:{type : Boolean , default : false},
+    callStarted: { type: Boolean, default: false },
 })
 
 const appointmentModel = mongoose.model.appointment || mongoose.model('appointment' , appointmentSchema)

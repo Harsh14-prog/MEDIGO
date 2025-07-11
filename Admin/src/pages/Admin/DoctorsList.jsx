@@ -39,9 +39,9 @@ const DoctorsList = () => {
               </h2>
               <p className="text-sm text-gray-600 mb-2">{item.speciality}</p>
 
-              {/* Availability Toggle */}
-              <div className="flex items-center justify-between mt-3">
-                <label className="flex items-center gap-3 text-sm text-gray-700">
+              {/* Availability Toggle (Updated for responsiveness) */}
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-3">
+                <label className="flex items-center gap-2 text-sm text-gray-700">
                   <input
                     type="checkbox"
                     onChange={() => changeAvailibility(item._id)}
@@ -55,7 +55,7 @@ const DoctorsList = () => {
                 </label>
 
                 <span
-                  className={`text-sm px-3 py-1 rounded-full font-semibold ${
+                  className={`text-sm px-3 py-1 rounded-full font-semibold text-center w-fit ${
                     item.available
                       ? "bg-green-100 text-green-700"
                       : "bg-red-100 text-red-700"

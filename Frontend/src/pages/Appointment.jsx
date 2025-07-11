@@ -21,7 +21,7 @@ const Appointment = () => {
   const navigate = useNavigate();
 
   const fetchDocInfo = async () => {
-    const docInfo = await doctors.find((doc) => doc._id === docId);
+    const docInfo = doctors.find((doc) => doc._id === docId);
     setDocInfo(docInfo);
   };
 
@@ -55,11 +55,10 @@ const Appointment = () => {
         const slotDate = `${day}_${month}_${year}`;
         const slotTime = formattedTime;
 
-        const isSlotAvailable =
-          !(
-            docInfo.slots_booked[slotDate] &&
-            docInfo.slots_booked[slotDate].includes(slotTime)
-          );
+        const isSlotAvailable = !(
+          docInfo.slots_booked[slotDate] &&
+          docInfo.slots_booked[slotDate].includes(slotTime)
+        );
 
         if (isSlotAvailable) {
           daySlots.push({
@@ -112,7 +111,9 @@ const Appointment = () => {
   };
 
   useEffect(() => {
-    fetchDocInfo();
+    if (doctors.length > 0 && docId) {
+      fetchDocInfo();
+    }
   }, [doctors, docId]);
 
   useEffect(() => {

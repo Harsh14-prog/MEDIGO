@@ -3,6 +3,8 @@ import { useMediaQuery } from "react-responsive";
 import { DoctorContext } from "../../context/DoctorContext";
 import { AppContext } from "../../context/AppContext";
 import { assets } from "../../assets/assets";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const DoctorAppointment = () => {
   const {
@@ -12,13 +14,31 @@ const DoctorAppointment = () => {
     completeAppointment,
     cancelAppointment,
   } = useContext(DoctorContext);
-  const { calculateAge, slotDateFormat, currency } = useContext(AppContext);
+  const { calculateAge, slotDateFormat, currency, backendUrl } =
+    useContext(AppContext);
 
   const isMobile = useMediaQuery({ maxWidth: 768 });
 
   useEffect(() => {
     if (dToken) getAllAppointments();
   }, [dToken]);
+
+  const startCall = async (appointmentId) => {
+    try {
+      console.log("📞 Calling startCall with appointmentId:", appointmentId);
+      const { data } = await axios.post(
+        backendUrl + "/api/doctor/start-call",
+        { appointmentId },
+        { headers: { dtoken: dToken } } // 👈 must be `dtoken` to match your backend
+      );
+      console.log("✅ Response from backend:", data);
+      if (data.success) toast.success(data.message);
+      else toast.error(data.message);
+    } catch (error) {
+      console.log("❌ Error calling startCall:", error);
+      toast.error(error.message);
+    }
+  };
 
   return (
     <div className="w-full max-w-6xl m-5">
@@ -102,16 +122,14 @@ const DoctorAppointment = () => {
                         title="Mark as Complete"
                         className="w-6 h-6 cursor-pointer hover:scale-110 transition"
                       />
-
-                      {item.payment && !item.cancelled && !item.iscompleted && (
-                        <a
-                          href={`/video-call/${item._id}`}
-                          className="text-xs bg-blue-600 text-white px-2 py-1 rounded-full font-medium hover:bg-blue-700 transition"
-                          target="_blank"
-                          rel="noopener noreferrer"
+                      {item.payment && (
+                        <button
+                          onClick={() => startCall(item._id)}
+                          title="Start Video Call"
+                          className="w-6 h-6 flex items-center justify-center bg-green-500 text-white rounded-full hover:bg-green-600 transition"
                         >
-                          Join Call
-                        </a>
+                          🎥
+                        </button>
                       )}
                     </>
                   )}
@@ -176,15 +194,16 @@ const DoctorAppointment = () => {
                 </div>
 
                 <div className="flex items-center justify-between mt-3">
-                  {item.payment && !item.cancelled && !item.iscompleted && (
-                    <a
-                      href={`/video-call/${item._id}`}
-                      className="mt-2 inline-block bg-blue-600 text-white text-xs px-3 py-1 rounded-full font-medium hover:bg-blue-700 transition"
-                      target="_blank"
-                      rel="noopener noreferrer"
+                  {item.payment && (
+                    <button
+                      onClick={() => startCall(item._id)}
+                      className="flex items-center gap-1 text-xs font-semibold bg-gradient-to-r from-green-500 to-green-600 text-white px-3 py-1.5 rounded-full shadow hover:from-green-600 hover:to-green-700 transition"
                     >
-                      Join Call
-                    </a>
+                      <span role="img" aria-label="video">
+                        🎥
+                      </span>
+                      Start Video Call
+                    </button>
                   )}
 
                   {item.cancelled ? (
