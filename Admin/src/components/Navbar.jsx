@@ -23,7 +23,7 @@ const Navbar = () => {
       <div className="flex items-center gap-2 text-xs">
         <img
           onClick={() => navigate("/")}
-          className="w-16 sm:w-24 md:w-20 cursor-pointer object-contain"
+          className="w-16 sm:w-16 md:w-20 cursor-pointer object-contain"
           src={assets.logo}
           alt="Medigo Logo"
         />

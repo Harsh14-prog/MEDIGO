@@ -159,28 +159,31 @@ const appointmentCancel = async (req, res) => {
 };
 
 // API to get dashboard data to admin panel
-const adminDashboard = async (req , res) => {
-    
+const adminDashboard = async (req, res) => {
   try {
-     
-       const doctors = await doctorModel.find({})
-       const users = await userModel.find({})
-       const appointments = await appointmentModel.find({})
+    const doctors = await doctorModel.find({});
+    const users = await userModel.find({});
+    const appointments = await appointmentModel.find({});
 
-       const dashData = {
-         doctors : doctors.length,
-         appointments : appointments.length,
-         patients : users.length,
-         latestAppointments : appointments.reverse().slice(0,5)
-       }
+    // Calculate total earnings only from completed and non-cancelled appointments
+    const totalEarnings = appointments
+      .filter((app) => app.iscompleted && !app.cancelled)
+      .reduce((sum, app) => sum + (app.amount || 0), 0);
 
-       res.json({success : true , dashData})
+    const dashData = {
+      doctors: doctors.length,
+      appointments: appointments.length,
+      patients: users.length,
+      earning: totalEarnings, 
+      latestAppointments: appointments.reverse().slice(0, 5),
+    };
 
-    } catch (error) {
-      console.log(error);
-      res.json({ success: false, message: error.message });
-    }
-   
-}
+    res.json({ success: true, dashData });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+};
+
 
 export { addDoctor , loginAdmin ,allDoctors , appointmentsAdmin, appointmentCancel, adminDashboard};

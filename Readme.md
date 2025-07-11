@@ -21,7 +21,7 @@ Medigo is a modern, responsive healthcare platform that enables patients to seam
 ## 📸 Screenshots
 
 ### 🏠 Home Page
-![Home Page](https://github.com/user-attachments/assets/64350d9f-dbfd-457b-96b4-f7846f993136)
+![Home Page](https://github.com/user-attachments/assets/945407c9-3534-4890-99bd-d929f29bb247)
 
 ---
 
