@@ -26,7 +26,7 @@ Medigo is a modern, responsive healthcare platform that enables patients to seam
 ---
 
 ### 🛠️ Admin – Doctor List
-![Admin Panel](https://github.com/user-attachments/assets/9db98687-0cc4-4470-80c0-e9668cb23b83)
+![Admin Panel](https://github.com/user-attachments/assets/723d9fc3-8c60-4caf-84c1-2c9758d28723)
 
 ---
 
