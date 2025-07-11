@@ -20,31 +20,50 @@ Medigo is a modern, responsive healthcare platform that enables patients to seam
 
 ## 📸 Screenshots
 
-| Home Page | Admin – Doctor List | Doctor Panel | Appointment Booking | My Appointments |
-|-----------|---------------------|---------------|----------------------|------------------|
-| ![Home Page](https://github.com/user-attachments/assets/64350d9f-dbfd-457b-96b4-f7846f993136) | ![Admin Panel](https://github.com/user-attachments/assets/9db98687-0cc4-4470-80c0-e9668cb23b83) | ![Doctor Panel](https://github.com/user-attachments/assets/ce5f88c4-9473-48cd-a995-b877a69d05bd) | ![Booking Page](https://github.com/user-attachments/assets/12b6d7cf-d084-4145-8df7-97051b848dda) | ![My Appointments](https://github.com/user-attachments/assets/751d064e-970a-4a32-a311-c0f1664fced6)|
+### 🏠 Home Page
+![Home Page](https://github.com/user-attachments/assets/64350d9f-dbfd-457b-96b4-f7846f993136)
+
+---
+
+### 🛠️ Admin – Doctor List
+![Admin Panel](https://github.com/user-attachments/assets/9db98687-0cc4-4470-80c0-e9668cb23b83)
+
+---
+
+### 👨‍⚕️ Doctor Panel
+![Doctor Panel](https://github.com/user-attachments/assets/ce5f88c4-9473-48cd-a995-b877a69d05bd)
+
+---
+
+### 📅 Appointment Booking
+![Booking Page](https://github.com/user-attachments/assets/12b6d7cf-d084-4145-8df7-97051b848dda)
+
+---
+
+### 📋 My Appointments
+![My Appointments](https://github.com/user-attachments/assets/751d064e-970a-4a32-a311-c0f1664fced6)
 
 
 
 ## 🧭 Project Structure
-
+```
 medigo/
 ├── client/ # Frontend (React)
-│ ├── components/ # Reusable UI components
-│ ├── pages/ # Route-level views
-│ └── App.jsx # Entry point for frontend
-├── admin/ # Admin Panel frontend (if separate)
 │ ├── components/
 │ ├── pages/
 │ └── App.jsx
-├── server/ # Backend (Node.js + Express)
-│ ├── controllers/ # Business logic
-│ ├── models/ # Mongoose schemas
-│ ├── routes/ # API routes
-│ ├── middleware/ # Auth, error handling, etc.
-│ └── index.js / server.js
+├── admin/ # Admin Panel (React)
+│ ├── components/
+│ ├── pages/
+│ └── App.jsx
+├── server/ # Backend (Express)
+│ ├── controllers/
+│ ├── models/
+│ ├── routes/
+│ ├── middleware/
+│ └── index.js
 └── README.md
-
+```
 
 ## 🛠️ Installation
 
